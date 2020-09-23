@@ -30,10 +30,10 @@ func main() {
 	r.Run(":8080")
 }
 
-// ApiMiddleware will add the db connection to the context
+// Middleware will add the db connection to the context
 func DbMiddleware(db* mongo.Client) gin.HandlerFunc {
     return func(c *gin.Context) {
-        c.Set("db", db)
+        c.Set("client", db)
         c.Next()
     }
 }
