@@ -7,22 +7,38 @@ import (
     "fmt"
     "log"
     "go.mongodb.org/mongo-driver/mongo"
-    "go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/options"
   )
 
 func main() {
 	r := gin.Default()
 
-	//Connect()
+	db := Connect()
+
+	r.Use(DbMiddleware(db))
 	
 	r.POST("/login", gah.LoginHandler)
-    r.POST("/register", gah.RegisterHandler)
+	r.POST("/register", gah.RegisterHandler)
+	r.POST("/notes", gah.AuthRequiredMiddleware, CreateNoteHandler)
+	r.PUT("/notes/:id", gah.AuthRequiredMiddleware, UpdateNoteHandler)
+	r.DELETE("/notes/:id", gah.AuthRequiredMiddleware, DeleteNoteHandler)
+
+	r.PUT("/notes/:id/archive", gah.AuthRequiredMiddleware, ArchiveNoteHandler)
+
+	r.GET("/notes", gah.AuthRequiredMiddleware, GetNoteHandler)
+
 	r.Run(":8080")
 }
 
+// ApiMiddleware will add the db connection to the context
+func DbMiddleware(db* mongo.Client) gin.HandlerFunc {
+    return func(c *gin.Context) {
+        c.Set("db", db)
+        c.Next()
+    }
+}
 
-
-func Connect() {
+func Connect() *mongo.Client {
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -37,17 +53,5 @@ func Connect() {
 	}
 	fmt.Println("Connected to MongoDB!")
 
-	collection := client.Database("thirdfort").Collection("users")
-
-	_, err = collection.InsertOne(context.TODO(), gah.LoginStruct{"kaneywaney11@hotmail.co.uk", "12345"})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Close Connection
-	err = client.Disconnect(context.TODO())
-	if err != nil {
-   	 log.Fatal(err)
-	}
-	fmt.Println("Connection to MongoDB closed.")
+	return client
 }
