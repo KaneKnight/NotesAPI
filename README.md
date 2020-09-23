@@ -16,3 +16,8 @@ sudo apt-get install -y mongodb-org
 To install Go:
 
 See here: https://golang.org/doc/install
+
+
+To see the API documentation head to this link: https://documenter.getpostman.com/view/5708033/TVKEXcxH
+
+The way the API works is to first register a user with an email and password. Next, a user wanting to interact with the api must login by sending their email and password to the `/login` endpoint. This will return an authentication token and a user id. These fields are required for all other api requests as the headers `X-Auth-Token` and `X-User-Id`.
