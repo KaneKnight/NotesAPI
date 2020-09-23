@@ -16,9 +16,23 @@ sudo apt-get update
 sudo apt-get install -y mongodb-org
 ```
 
+
+To launch the mongod service:
+```
+sudo service mongod start
+```
+
+Note: For different operating systems this process will be different.
+
 To install Go:
 
 See here: https://golang.org/doc/install
+
+To launch the notes backend run the command:
+```
+./run.sh
+```
+
 
 
 ## API Description
