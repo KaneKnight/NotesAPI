@@ -13,6 +13,3 @@ func main() {
 func home(c* gin.Context) {
 	c.String(http.StatusOK, "Hello.")
 }
-
-
-tsgafg
