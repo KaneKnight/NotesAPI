@@ -29,7 +29,7 @@ The way the API works is to first register a user with an email and password. Ne
 ## Technical Choices
 I chose to use Go for the backend implementation because I have used it before and I didn't want to spend too much time getting acustomed to a new framework.  On top of that, the Go language is typed and can help me spot errors at compile time, otherwise I would of had to wait to hit the endpoint to find the type errors.
 
-I chose to use MongoDB because it is a no sql framework. When I began designing the API I realised the notes themselves wouldn't need to store many fields, so I thought the overhead of designing an sql schema although not difficult, would yield little benefit. Futher, I didn't want to spend too much time implementing a user system as this has bee done a lot, and I found this library (https://github.com/yasaricli/gah) which links MongoDB and Go so it was a natural fit.
+I chose to use MongoDB because it is a no sql framework. When I began designing the API I realised the notes themselves wouldn't need to store many fields, so I thought the overhead of designing an sql schema although not difficult, would yield little benefit. Futher, I didn't want to spend too much time implementing a user system as this has been done a lot, and I found this library (https://github.com/yasaricli/gah) which links MongoDB and Go so it was a natural fit.
 
 ## Extensions
 If I were to continue, I need to add a https connection for the login and register as plain text passwords are being sent, which could be sniffed by a man in the middle. I would also want to learn how to mock the database connection so I can unit test my handlers.
