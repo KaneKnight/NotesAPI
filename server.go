@@ -1,14 +1,15 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/yasaricli/gah"
-	"context"
-    "fmt"
-    "log"
-    "go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-  )
+	"log"
+	"os"
+)
 
 func main() {
 	r := gin.Default()
@@ -16,7 +17,7 @@ func main() {
 	db := Connect()
 
 	r.Use(DbMiddleware(db))
-	
+
 	r.POST("/login", gah.LoginHandler)
 	r.POST("/register", gah.RegisterHandler)
 	r.POST("/notes", gah.AuthRequiredMiddleware, CreateNoteHandler)
@@ -31,27 +32,27 @@ func main() {
 }
 
 // Middleware will add the db connection to the context
-func DbMiddleware(db* mongo.Client) gin.HandlerFunc {
-    return func(c *gin.Context) {
-        c.Set("client", db)
-        c.Next()
-    }
+func DbMiddleware(db *mongo.Collection) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Set("client", db)
+		c.Next()
+	}
 }
 
-func Connect() *mongo.Client {
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+func Connect() *mongo.Collection {
+	clientOptions := options.Client().ApplyURI(os.Getenv("MONGO_URL"))
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	// Check the connection
-	err = client.Ping(context.TODO(), nil)	
+	err = client.Ping(context.TODO(), nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println("Connected to MongoDB!")
 
-	return client
+	return client.Database(os.Getenv("MONGO_DATABASE")).Collection(os.Getenv("MONGO_NOTES_COLLECTION"))
 }
